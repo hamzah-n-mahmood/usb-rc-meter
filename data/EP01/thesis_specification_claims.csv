@@ -1,0 +1,9 @@
+item,thesis_claim_2014,evidence_in_thesis,status_after_review,episode
+Resistance range,100 ohm - 2 Mohm (4 stages),Exp. 6 tested 1 ohm - 10 Mohm; highest in-range test 1 Mohm,<100 ohm unreliable (offset ~1-2 counts); 1-2 Mohm untested,EP03/EP06
+Capacitance range,1 nF - 100 uF,Exp. 4 (Proteus) + Exp. 6,1 nF read +9 %; 100 uF read 110.18 uF (part tolerance +20 %),EP04/EP06
+Power,USB 5 V (max 5 V / 500 mA),Kollman & Betten (2005),VBUS 4.75-5.25 V (4.40 V low-power); design is ratiometric,EP01/EP03
+Accuracy,"""extremely close"" to other meters; within rated tolerance",Exp. 6 single readings,-0.8 to -1.8 % vs CD800a (390 ohm-46 kohm); within CD800a's own +/-(1.2 %+5 dgt),EP06
+Temperature compensation,"""tremendously minimized"" by D1",None (theory only),Untested; estimate ~1-1.5 % per +20 C,EP02
+Microcontroller clock,8 MHz (0.5 us Timer1 tick),Compiler setting Clock=8000000,OSCCON never written; PIC16F886 default 4 MHz - verify on hardware,EP05
+Cost,RM 81.90 estimated / RM 61.00 actual,Appendix D,UC00A bridge = RM 39 (64 %); CH340 UC00C now RM 15.75,EP06
+Software,Windows 7 & 8 (64-bit); .NET 4.5,Screenshots,All tested Windows versions out of support (7: 2020; 8.1: 2023; 10: Oct 2025),EP05

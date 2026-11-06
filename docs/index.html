@@ -1,0 +1,950 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RC Meter Lab Data</title>
+<meta name="description" content="Every measurement from the Building a USB RC Meter video series, with the files they came from.">
+<style>
+:root {
+  --font-anthropic-sans: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-anthropic-serif: Georgia, "Times New Roman", serif;
+  --color-fg: #1F2328; --color-fg-muted: #5B6470; --color-bg: #FAFAF7; --color-panel: #FFFFFF; --color-border-line: #E3E1DA;
+  --color-ok: #1B7F5B; --color-warn: #A87E00; --color-bad: #C8384A;
+  --cds-font-size-title: 1.75rem; --cds-font-size-heading: 1.05rem; --cds-font-size-body: 0.95rem; --cds-font-size-caption: 0.8rem;
+  --cds-font-weight-medium: 600; --cds-gap-xs: 0.35rem; --cds-gap-sm: 0.6rem; --cds-gap-md: 1rem; --cds-gap-lg: 1.5rem; --cds-gap-xl: 2rem;
+  --cds-pad-xs: 0.3rem; --cds-pad-sm: 0.5rem; --cds-pad-md: 0.8rem; --cds-pad-lg: 1.1rem; --cds-radius: 10px; --cds-dur-slow: 300ms;
+  --cds-surface-popover: #FFFFFF; --cds-border: #D6D3CA; --cds-shadow-popover: 0 4px 16px rgba(0,0,0,0.12); --cds-text-secondary: #5B6470;
+  --cds-chart-grid: #ECEAE3; --cds-chart-axis: #8A9099; --cds-chart-reference: #8A9099; --cds-chart-muted: #C9CDD3; --cds-chart-status-critical: #C8384A;
+  --s1: #2E6FBF; --s2: #B07A00; --s3: #1B8A5A; --s4: #8A4FBF; --s5: #C8384A; --s6: #0F8C9E; --s7: #7A6A00; --s8: #5B6470;
+}
+@media (prefers-color-scheme: dark) { :root {
+  --color-fg: #ECEAE4; --color-fg-muted: #A3AAB3; --color-bg: #1A1D21; --color-panel: #23272C; --color-border-line: #353A41;
+  --color-ok: #4CC08F; --color-warn: #E0B030; --color-bad: #F07A86;
+  --cds-surface-popover: #2B3036; --cds-border: #444A52; --cds-shadow-popover: 0 4px 16px rgba(0,0,0,0.5); --cds-text-secondary: #A3AAB3;
+  --cds-chart-grid: #30353B; --cds-chart-axis: #7B838D; --cds-chart-reference: #8D959F; --cds-chart-muted: #4A5058; --cds-chart-status-critical: #F07A86;
+  --s1: #6FA3E8; --s2: #E0B030; --s3: #4CC08F; --s4: #B48BE8; --s5: #F07A86; --s6: #4FC3D2; --s7: #CDBB4A; --s8: #A3AAB3;
+} }
+html, body { margin: 0; background: var(--color-bg); color: var(--color-fg); }
+body { padding: 24px 16px 48px; }
+#dash-root { max-width: 1180px; margin: 0 auto; }
+a { color: var(--s1); }
+.rc-links { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); margin: 0 0 var(--cds-gap-md) !important; }
+.rc-src-btn { font: inherit; color: var(--s1); background: none; border: 1px solid var(--color-border-line); border-radius: 6px; padding: 1px 10px; cursor: pointer; }
+.rc-src-line { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-top: var(--cds-gap-sm) !important; }
+.dash-skeleton { }
+#src-panel { max-width: min(760px, 92vw); max-height: 86vh; border: 1px solid var(--color-border-line); border-radius: 12px; background: var(--color-panel); color: var(--color-fg); padding: 20px 22px; }
+#src-panel::backdrop { background: rgba(0,0,0,0.45); }
+#src-panel h2 { margin: 0 0 6px; font-size: 1.2rem; }
+#src-panel h3 { margin: 18px 0 6px; font-size: 1rem; }
+#src-panel .item { border-top: 1px solid var(--color-border-line); padding: 10px 0; font-size: 0.9rem; }
+#src-panel .item p { margin: 4px 0; color: var(--color-fg-muted); }
+#src-panel pre { white-space: pre-wrap; font-size: 0.75rem; background: var(--color-bg); border-radius: 6px; padding: 8px; overflow: auto; }
+#src-close { float: right; font: inherit; background: none; border: 1px solid var(--color-border-line); border-radius: 6px; color: var(--color-fg); cursor: pointer; padding: 2px 10px; }
+.rc-copy { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-top: var(--cds-gap-md); }
+</style>
+<style>
+.rc { font-family: var(--font-anthropic-sans); color: var(--color-fg); }
+.rc h1 { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0 0 var(--cds-gap-xs); }
+.rc h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0 0 var(--cds-gap-xs); }
+.rc h3 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0 0 var(--cds-gap-xs); }
+.rc p { margin: 0; }
+.rc-take { color: var(--color-fg-muted); max-width: 62rem; margin-bottom: var(--cds-gap-lg); }
+.rc-take span, .rc-kpi-num span { color: var(--color-fg); font-variant-numeric: tabular-nums; }
+.rc-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: var(--cds-gap-md); margin-bottom: var(--cds-gap-xl); }
+.rc-kpi, .rc-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); }
+.rc-kpi-num { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; margin-bottom: var(--cds-gap-xs); }
+.rc-kpi-label, .rc-note { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.rc-note { margin-bottom: var(--cds-gap-md); }
+.rc-tabs { display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs); border-bottom: 1px solid var(--color-border-line); margin-bottom: var(--cds-gap-lg); }
+.rc-tab { appearance: none; background: none; border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; padding: var(--cds-pad-sm) var(--cds-pad-md); font: inherit; font-size: var(--cds-font-size-body); color: var(--color-fg-muted); cursor: pointer; }
+.rc-tab:hover { color: var(--color-fg); }
+.rc-tab[aria-selected="true"] { color: var(--color-fg); border-bottom-color: var(--color-fg); }
+.rc-intro { color: var(--color-fg-muted); max-width: 62rem; margin-bottom: var(--cds-gap-lg); }
+.rc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr)); gap: var(--cds-gap-md); margin-bottom: var(--cds-gap-md); }
+.rc-wide { grid-column: 1 / -1; }
+.rc-chart { position: relative; }
+.rc-chart svg { display: block; }
+.rc-legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs) var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-bottom: var(--cds-gap-sm); }
+.rc-legend span { display: inline-flex; align-items: center; gap: var(--cds-gap-xs); }
+.rc-sw { display: inline-block; width: 0.6rem; height: 0.6rem; border-radius: 50%; flex: none; }
+.rc-sw-bar { border-radius: 2px; width: 0.9rem; height: 0.5rem; }
+.rc-sw-ring { background: none !important; border: 2px solid; width: 0.55rem; height: 0.55rem; }
+.rc-sw-dash { border-radius: 0; height: 0; width: 0.9rem; border-top: 2px dashed var(--cds-chart-reference); }
+.rc-tip { position: absolute; z-index: 2; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); padding: var(--cds-pad-xs) var(--cds-pad-sm); font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rc-tip-head { color: var(--cds-text-secondary); margin-bottom: 2px; }
+.rc-tip div { display: flex; align-items: center; gap: var(--cds-gap-xs); }
+.rc-scroll { max-height: 30rem; overflow: auto; }
+.rc-table { width: 100%; border-collapse: collapse; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.rc-table th { position: sticky; top: 0; background: var(--color-panel); text-align: left; font-weight: var(--cds-font-weight-medium); color: var(--color-fg-muted); vertical-align: bottom; }
+.rc-table th, .rc-table td { padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); }
+.rc-table td { vertical-align: top; }
+.rc-table .num { text-align: right; white-space: nowrap; }
+.rc-table .rc-wrap { min-width: 12rem; }
+.rc-good { color: var(--color-ok); }
+.rc-badv { color: var(--color-bad); }
+.rc-fail { display: flex; align-items: center; justify-content: center; gap: var(--cds-gap-xs); min-height: inherit; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.rc-fail::before { content: ""; width: 0.375rem; height: 0.375rem; border-radius: 50%; background: var(--color-bad); }
+.rc [data-dash-source-state=empty] { color: transparent; }
+.rc [data-dash-source-state=refreshing] { opacity: 0.5; transition: opacity var(--cds-dur-slow); }
+.rc-foot { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-top: var(--cds-gap-lg); max-width: 62rem; }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script>
+// Stand-in for the claude.ai dashboard runtime: the data are embedded below, calculations run once, charts redraw on resize.
+window.RC_DATA = {"exp1_current": {"title": "Exp. 1 current-source sweep", "description": "Thesis Experiment 1: the current from each of the four transistor current sources as the resistor under test grows, with the voltage across it; the I_unit column says whether a current is in mA or µA.", "file": "EP02_exp1_constant_current_stages.csv", "repo_path": "data/EP02/exp1_constant_current_stages.csv", "columns": ["stage", "R_DUT_ohm", "V_RDUT_V", "I_C", "I_unit"], "rows": [{"stage": "1", "R_DUT_ohm": "0", "V_RDUT_V": "0", "I_C": "1.49", "I_unit": "mA"}, {"stage": "1", "R_DUT_ohm": "203.6", "V_RDUT_V": "0.3", "I_C": "1.49", "I_unit": "mA"}, {"stage": "1", "R_DUT_ohm": "411.4", "V_RDUT_V": "0.61", "I_C": "1.48", "I_unit": "mA"}, {"stage": "1", "R_DUT_ohm": "641.3", "V_RDUT_V": "0.95", "I_C": "1.48", "I_unit": "mA"}, {"stage": "1", "R_DUT_ohm": "807.8", "V_RDUT_V": "1.2", "I_C": "1.49", "I_unit": "mA"}, {"stage": "1", "R_DUT_ohm": "1059", "V_RDUT_V": "1.57", "I_C": "1.48", "I_unit": "mA"}, {"stage": "1", "R_DUT_ohm": "1205", "V_RDUT_V": "1.79", "I_C": "1.49", "I_unit": "mA"}, {"stage": "1", "R_DUT_ohm": "1407", "V_RDUT_V": "2.09", "I_C": "1.49", "I_unit": "mA"}, {"stage": "1", "R_DUT_ohm": "1615", "V_RDUT_V": "2.39", "I_C": "1.48", "I_unit": "mA"}, {"stage": "1", "R_DUT_ohm": "1822", "V_RDUT_V": "2.7", "I_C": "1.48", "I_unit": "mA"}, {"stage": "1", "R_DUT_ohm": "2149", "V_RDUT_V": "3.18", "I_C": "1.48", "I_unit": "mA"}, {"stage": "1", "R_DUT_ohm": "2318", "V_RDUT_V": "3.43", "I_C": "1.48", "I_unit": "mA"}, {"stage": "1", "R_DUT_ohm": "2580", "V_RDUT_V": "3.82", "I_C": "1.48", "I_unit": "mA"}, {"stage": "1", "R_DUT_ohm": "2859", "V_RDUT_V": "4.19", "I_C": "1.47", "I_unit": "mA"}, {"stage": "1", "R_DUT_ohm": "3116", "V_RDUT_V": "4.27", "I_C": "1.37", "I_unit": "mA"}, {"stage": "1", "R_DUT_ohm": "3439", "V_RDUT_V": "4.32", "I_C": "1.26", "I_unit": "mA"}, {"stage": "1", "R_DUT_ohm": "3784", "V_RDUT_V": "4.36", "I_C": "1.15", "I_unit": "mA"}, {"stage": "2", "R_DUT_ohm": "0.0", "V_RDUT_V": "0", "I_C": "0.16", "I_unit": "mA"}, {"stage": "2", "R_DUT_ohm": "2066.0", "V_RDUT_V": "0.33", "I_C": "0.16", "I_unit": "mA"}, {"stage": "2", "R_DUT_ohm": "4090.0", "V_RDUT_V": "0.65", "I_C": "0.159", "I_unit": "mA"}, {"stage": "2", "R_DUT_ohm": "6040.0", "V_RDUT_V": "0.96", "I_C": "0.159", "I_unit": "mA"}, {"stage": "2", "R_DUT_ohm": "8060.0", "V_RDUT_V": "1.29", "I_C": "0.16", "I_unit": "mA"}, {"stage": "2", "R_DUT_ohm": "10050.0", "V_RDUT_V": "1.61", "I_C": "0.16", "I_unit": "mA"}, {"stage": "2", "R_DUT_ohm": "12150.0", "V_RDUT_V": "1.96", "I_C": "0.161", "I_unit": "mA"}, {"stage": "2", "R_DUT_ohm": "14240.0", "V_RDUT_V": "2.27", "I_C": "0.159", "I_unit": "mA"}, {"stage": "2", "R_DUT_ohm": "16170.0", "V_RDUT_V": "2.57", "I_C": "0.159", "I_unit": "mA"}, {"stage": "2", "R_DUT_ohm": "18150.0", "V_RDUT_V": "2.95", "I_C": "0.163", "I_unit": "mA"}, {"stage": "2", "R_DUT_ohm": "21010.0", "V_RDUT_V": "3.29", "I_C": "0.157", "I_unit": "mA"}, {"stage": "2", "R_DUT_ohm": "24220.0", "V_RDUT_V": "3.87", "I_C": "0.16", "I_unit": "mA"}, {"stage": "2", "R_DUT_ohm": "26440.0", "V_RDUT_V": "4.05", "I_C": "0.153", "I_unit": "mA"}, {"stage": "2", "R_DUT_ohm": "28440.0", "V_RDUT_V": "4.2", "I_C": "0.148", "I_unit": "mA"}, {"stage": "2", "R_DUT_ohm": "30880.0", "V_RDUT_V": "4.23", "I_C": "0.137", "I_unit": "mA"}, {"stage": "2", "R_DUT_ohm": "32550.0", "V_RDUT_V": "4.24", "I_C": "0.13", "I_unit": "mA"}, {"stage": "2", "R_DUT_ohm": "34660.0", "V_RDUT_V": "4.24", "I_C": "0.122", "I_unit": "mA"}, {"stage": "3", "R_DUT_ohm": "0.0", "V_RDUT_V": "0", "I_C": "16.62", "I_unit": "uA"}, {"stage": "3", "R_DUT_ohm": "20250.0", "V_RDUT_V": "0.34", "I_C": "16.79", "I_unit": "uA"}, {"stage": "3", "R_DUT_ohm": "40000.0", "V_RDUT_V": "0.68", "I_C": "17.0", "I_unit": "uA"}, {"stage": "3", "R_DUT_ohm": "60660.0", "V_RDUT_V": "1.03", "I_C": "16.98", "I_unit": "uA"}, {"stage": "3", "R_DUT_ohm": "80650.0", "V_RDUT_V": "1.36", "I_C": "16.86", "I_unit": "uA"}, {"stage": "3", "R_DUT_ohm": "102220.0", "V_RDUT_V": "1.73", "I_C": "16.92", "I_unit": "uA"}, {"stage": "3", "R_DUT_ohm": "120030.0", "V_RDUT_V": "2.02", "I_C": "16.83", "I_unit": "uA"}, {"stage": "3", "R_DUT_ohm": "140340.0", "V_RDUT_V": "2.36", "I_C": "16.82", "I_unit": "uA"}, {"stage": "3", "R_DUT_ohm": "160200.0", "V_RDUT_V": "2.68", "I_C": "16.73", "I_unit": "uA"}, {"stage": "3", "R_DUT_ohm": "180700.0", "V_RDUT_V": "3.03", "I_C": "16.77", "I_unit": "uA"}, {"stage": "3", "R_DUT_ohm": "200200.0", "V_RDUT_V": "3.4", "I_C": "16.98", "I_unit": "uA"}, {"stage": "3", "R_DUT_ohm": "230600.0", "V_RDUT_V": "3.9", "I_C": "16.91", "I_unit": "uA"}, {"stage": "3", "R_DUT_ohm": "260300.0", "V_RDUT_V": "4.0", "I_C": "15.37", "I_unit": "uA"}, {"stage": "3", "R_DUT_ohm": "279900.0", "V_RDUT_V": "4.2", "I_C": "15.01", "I_unit": "uA"}, {"stage": "3", "R_DUT_ohm": "300100.0", "V_RDUT_V": "4.2", "I_C": "14.0", "I_unit": "uA"}, {"stage": "3", "R_DUT_ohm": "320400.0", "V_RDUT_V": "4.2", "I_C": "13.11", "I_unit": "uA"}, {"stage": "3", "R_DUT_ohm": "340200.0", "V_RDUT_V": "4.2", "I_C": "12.35", "I_unit": "uA"}, {"stage": "4", "R_DUT_ohm": "0.0", "V_RDUT_V": "0", "I_C": "1.83", "I_unit": "uA"}, {"stage": "4", "R_DUT_ohm": "201100.0", "V_RDUT_V": "0.37", "I_C": "1.83", "I_unit": "uA"}, {"stage": "4", "R_DUT_ohm": "454900.0", "V_RDUT_V": "0.83", "I_C": "1.82", "I_unit": "uA"}, {"stage": "4", "R_DUT_ohm": "1008900.0", "V_RDUT_V": "1.83", "I_C": "1.81", "I_unit": "uA"}, {"stage": "4", "R_DUT_ohm": "1461200.0", "V_RDUT_V": "2.63", "I_C": "1.8", "I_unit": "uA"}, {"stage": "4", "R_DUT_ohm": "2010000.0", "V_RDUT_V": "3.6", "I_C": "1.8", "I_unit": "uA"}, {"stage": "4", "R_DUT_ohm": "2330000.0", "V_RDUT_V": "4.0", "I_C": "1.79", "I_unit": "uA"}, {"stage": "4", "R_DUT_ohm": "3000000.0", "V_RDUT_V": "4.05", "I_C": "1.35", "I_unit": "uA"}, {"stage": "4", "R_DUT_ohm": "3470000.0", "V_RDUT_V": "4.06", "I_C": "1.17", "I_unit": "uA"}, {"stage": "4", "R_DUT_ohm": "3970000.0", "V_RDUT_V": "4.07", "I_C": "1.03", "I_unit": "uA"}]}, "exp4_proteus": {"title": "Exp. 4 Proteus capacitance", "description": "Thesis Experiment 4: simulated 555-timer readings for capacitors from 18 pF to 200 µF, with each error and the extra timer counts it implies.", "file": "EP04_exp4_proteus_capacitance.csv", "repo_path": "data/EP04/exp4_proteus_capacitance.csv", "columns": ["rated_F", "simulated_reading_F", "error_pct", "extra_timer_counts"], "rows": [{"rated_F": "1.8e-11", "simulated_reading_F": "9.1024e-11", "error_pct": "405.69", "extra_timer_counts": "4.8"}, {"rated_F": "2.2e-10", "simulated_reading_F": "3.6409e-10", "error_pct": "65.5", "extra_timer_counts": "9.5"}, {"rated_F": "2.7e-09", "simulated_reading_F": "2.82174e-09", "error_pct": "4.51", "extra_timer_counts": "8.0"}, {"rated_F": "3.3e-08", "simulated_reading_F": "3.31e-08", "error_pct": "0.3", "extra_timer_counts": "6.6"}, {"rated_F": "3.9e-07", "simulated_reading_F": "3.87e-07", "error_pct": "-0.77", "extra_timer_counts": "-197.8"}, {"rated_F": "4.7e-06", "simulated_reading_F": "4.696e-06", "error_pct": "-0.09", "extra_timer_counts": "-263.7"}, {"rated_F": "4.7e-05", "simulated_reading_F": "4.7019e-05", "error_pct": "0.04", "extra_timer_counts": "1252.4"}, {"rated_F": "0.0001", "simulated_reading_F": "0.00010003", "error_pct": "0.03", "extra_timer_counts": "1977.5"}, {"rated_F": "200e-6", "simulated_reading_F": "Out of Range", "error_pct": "", "extra_timer_counts": ""}]}, "exp6_capacitance": {"title": "Exp. 6 capacitor readings", "description": "Thesis Experiment 6: single readings of each test capacitor on the SANWA CD800a and the RC meter, with the errors and whether each part read within its rated tolerance.", "file": "EP06_exp6_capacitance.csv", "repo_path": "data/EP06/exp6_capacitance.csv", "columns": ["rated_F", "tolerance_pct", "SANWA_CD800a_F", "RC_meter_F", "err_vs_rated_pct", "err_vs_SANWA_pct", "within_tolerance"], "rows": [{"rated_F": "1e-09", "tolerance_pct": "5", "SANWA_CD800a_F": "1.45e-09", "RC_meter_F": "1.09e-09", "err_vs_rated_pct": "9.0", "err_vs_SANWA_pct": "-24.83", "within_tolerance": "False"}, {"rated_F": "1e-08", "tolerance_pct": "20", "SANWA_CD800a_F": "1.04e-08", "RC_meter_F": "1.0377e-08", "err_vs_rated_pct": "3.77", "err_vs_SANWA_pct": "-0.22", "within_tolerance": "True"}, {"rated_F": "4.7e-08", "tolerance_pct": "20", "SANWA_CD800a_F": "4.88e-08", "RC_meter_F": "4.4238e-08", "err_vs_rated_pct": "-5.88", "err_vs_SANWA_pct": "-9.35", "within_tolerance": "True"}, {"rated_F": "5.6e-08", "tolerance_pct": "10", "SANWA_CD800a_F": "5.73e-08", "RC_meter_F": "6.16e-08", "err_vs_rated_pct": "10.0", "err_vs_SANWA_pct": "7.5", "within_tolerance": "True"}, {"rated_F": "1e-07", "tolerance_pct": "20", "SANWA_CD800a_F": "8.01e-08", "RC_meter_F": "8.08e-08", "err_vs_rated_pct": "-19.2", "err_vs_SANWA_pct": "0.87", "within_tolerance": "True"}, {"rated_F": "1e-06", "tolerance_pct": "20", "SANWA_CD800a_F": "1.06e-06", "RC_meter_F": "1.0835e-06", "err_vs_rated_pct": "8.35", "err_vs_SANWA_pct": "2.22", "within_tolerance": "True"}, {"rated_F": "1e-05", "tolerance_pct": "20", "SANWA_CD800a_F": "1.13e-05", "RC_meter_F": "1.1473e-05", "err_vs_rated_pct": "14.73", "err_vs_SANWA_pct": "1.53", "within_tolerance": "True"}, {"rated_F": "2.2e-05", "tolerance_pct": "20", "SANWA_CD800a_F": "2.45e-05", "RC_meter_F": "2.5079e-05", "err_vs_rated_pct": "14.0", "err_vs_SANWA_pct": "2.36", "within_tolerance": "True"}, {"rated_F": "4.7e-05", "tolerance_pct": "20", "SANWA_CD800a_F": "5e-05", "RC_meter_F": "5.1057e-05", "err_vs_rated_pct": "8.63", "err_vs_SANWA_pct": "2.11", "within_tolerance": "True"}, {"rated_F": "0.0001", "tolerance_pct": "20", "SANWA_CD800a_F": "OL", "RC_meter_F": "0.00011018", "err_vs_rated_pct": "10.18", "err_vs_SANWA_pct": "", "within_tolerance": "True"}]}, "exp6_resistance": {"title": "Exp. 6 resistor readings", "description": "Thesis Experiment 6: single readings of each test resistor on the SANWA CD800a, the TE832B and the RC meter, with the errors and the CD800a's specified uncertainty at each value.", "file": "EP06_exp6_resistance.csv", "repo_path": "data/EP06/exp6_resistance.csv", "columns": ["rated_ohm", "tolerance_pct", "SANWA_CD800a_ohm", "TE832B_ohm", "RC_meter_ohm", "err_vs_rated_pct", "err_vs_CD800a_pct", "CD800a_spec_uncertainty_pct", "note"], "rows": [{"rated_ohm": "1", "tolerance_pct": "5", "SANWA_CD800a_ohm": "1.1", "TE832B_ohm": "1.3", "RC_meter_ohm": "4.981", "err_vs_rated_pct": "398.1", "err_vs_CD800a_pct": "352.82", "CD800a_spec_uncertainty_pct": "46.65", "note": ""}, {"rated_ohm": "2.2", "tolerance_pct": "5", "SANWA_CD800a_ohm": "2.3", "TE832B_ohm": "2.4", "RC_meter_ohm": "7.472", "err_vs_rated_pct": "239.64", "err_vs_CD800a_pct": "224.87", "CD800a_spec_uncertainty_pct": "22.94", "note": ""}, {"rated_ohm": "10", "tolerance_pct": "1", "SANWA_CD800a_ohm": "9.9", "TE832B_ohm": "10.8", "RC_meter_ohm": "14.944", "err_vs_rated_pct": "49.44", "err_vs_CD800a_pct": "50.95", "CD800a_spec_uncertainty_pct": "6.25", "note": ""}, {"rated_ohm": "18", "tolerance_pct": "5", "SANWA_CD800a_ohm": "18.3", "TE832B_ohm": "18.8", "RC_meter_ohm": "22.415", "err_vs_rated_pct": "24.53", "err_vs_CD800a_pct": "22.49", "CD800a_spec_uncertainty_pct": "3.93", "note": ""}, {"rated_ohm": "22", "tolerance_pct": "5", "SANWA_CD800a_ohm": "21.8", "TE832B_ohm": "22.1", "RC_meter_ohm": "24.906", "err_vs_rated_pct": "13.21", "err_vs_CD800a_pct": "14.25", "CD800a_spec_uncertainty_pct": "3.49", "note": ""}, {"rated_ohm": "100", "tolerance_pct": "5", "SANWA_CD800a_ohm": "99.3", "TE832B_ohm": "100.2", "RC_meter_ohm": "102.115", "err_vs_rated_pct": "2.11", "err_vs_CD800a_pct": "2.83", "CD800a_spec_uncertainty_pct": "1.7", "note": ""}, {"rated_ohm": "150", "tolerance_pct": "5", "SANWA_CD800a_ohm": "149", "TE832B_ohm": "149.5", "RC_meter_ohm": "149.436", "err_vs_rated_pct": "-0.38", "err_vs_CD800a_pct": "0.29", "CD800a_spec_uncertainty_pct": "1.54", "note": ""}, {"rated_ohm": "220", "tolerance_pct": "5", "SANWA_CD800a_ohm": "219.3", "TE832B_ohm": "220", "RC_meter_ohm": "216.683", "err_vs_rated_pct": "-1.51", "err_vs_CD800a_pct": "-1.19", "CD800a_spec_uncertainty_pct": "1.43", "note": ""}, {"rated_ohm": "260", "tolerance_pct": "5", "SANWA_CD800a_ohm": "270.9", "TE832B_ohm": "271", "RC_meter_ohm": "268.985", "err_vs_rated_pct": "3.46", "err_vs_CD800a_pct": "-0.71", "CD800a_spec_uncertainty_pct": "1.38", "note": "likely a 270 ohm part"}, {"rated_ohm": "390", "tolerance_pct": "5", "SANWA_CD800a_ohm": "390", "TE832B_ohm": "390", "RC_meter_ohm": "386.044", "err_vs_rated_pct": "-1.01", "err_vs_CD800a_pct": "-1.01", "CD800a_spec_uncertainty_pct": "1.33", "note": ""}, {"rated_ohm": "560", "tolerance_pct": "5", "SANWA_CD800a_ohm": "550", "TE832B_ohm": "552", "RC_meter_ohm": "542.952", "err_vs_rated_pct": "-3.04", "err_vs_CD800a_pct": "-1.28", "CD800a_spec_uncertainty_pct": "2.11", "note": ""}, {"rated_ohm": "1000", "tolerance_pct": "5", "SANWA_CD800a_ohm": "970", "TE832B_ohm": "978", "RC_meter_ohm": "956.392", "err_vs_rated_pct": "-4.36", "err_vs_CD800a_pct": "-1.4", "CD800a_spec_uncertainty_pct": "1.72", "note": ""}, {"rated_ohm": "1500", "tolerance_pct": "5", "SANWA_CD800a_ohm": "1498", "TE832B_ohm": "1496", "RC_meter_ohm": "1471.947", "err_vs_rated_pct": "-1.87", "err_vs_CD800a_pct": "-1.74", "CD800a_spec_uncertainty_pct": "1.53", "note": ""}, {"rated_ohm": "2200", "tolerance_pct": "5", "SANWA_CD800a_ohm": "2158", "TE832B_ohm": "2170", "RC_meter_ohm": "2119.504", "err_vs_rated_pct": "-3.66", "err_vs_CD800a_pct": "-1.78", "CD800a_spec_uncertainty_pct": "1.43", "note": ""}, {"rated_ohm": "3900", "tolerance_pct": "5", "SANWA_CD800a_ohm": "3850", "TE832B_ohm": "3860", "RC_meter_ohm": "3810", "err_vs_rated_pct": "-2.31", "err_vs_CD800a_pct": "-1.04", "CD800a_spec_uncertainty_pct": "1.33", "note": ""}, {"rated_ohm": "10000.0", "tolerance_pct": "5", "SANWA_CD800a_ohm": "9680", "TE832B_ohm": "9720", "RC_meter_ohm": "9574", "err_vs_rated_pct": "-4.26", "err_vs_CD800a_pct": "-1.1", "CD800a_spec_uncertainty_pct": "1.72", "note": ""}, {"rated_ohm": "15000.0", "tolerance_pct": "5", "SANWA_CD800a_ohm": "14820", "TE832B_ohm": "14870", "RC_meter_ohm": "14696", "err_vs_rated_pct": "-2.03", "err_vs_CD800a_pct": "-0.84", "CD800a_spec_uncertainty_pct": "1.54", "note": ""}, {"rated_ohm": "22000.0", "tolerance_pct": "5", "SANWA_CD800a_ohm": "21560", "TE832B_ohm": "21600", "RC_meter_ohm": "21375", "err_vs_rated_pct": "-2.84", "err_vs_CD800a_pct": "-0.86", "CD800a_spec_uncertainty_pct": "1.43", "note": ""}, {"rated_ohm": "33000.0", "tolerance_pct": "5", "SANWA_CD800a_ohm": "32550", "TE832B_ohm": "32600", "RC_meter_ohm": "32098", "err_vs_rated_pct": "-2.73", "err_vs_CD800a_pct": "-1.39", "CD800a_spec_uncertainty_pct": "1.35", "note": ""}, {"rated_ohm": "46000.0", "tolerance_pct": "5", "SANWA_CD800a_ohm": "46000", "TE832B_ohm": "46600", "RC_meter_ohm": "45508", "err_vs_rated_pct": "-1.07", "err_vs_CD800a_pct": "-1.07", "CD800a_spec_uncertainty_pct": "2.29", "note": "not an E24 value"}, {"rated_ohm": "100000.0", "tolerance_pct": "1", "SANWA_CD800a_ohm": "99600", "TE832B_ohm": "99800", "RC_meter_ohm": "99370", "err_vs_rated_pct": "-0.63", "err_vs_CD800a_pct": "-0.23", "CD800a_spec_uncertainty_pct": "1.7", "note": ""}, {"rated_ohm": "120000.0", "tolerance_pct": "5", "SANWA_CD800a_ohm": "120300.0", "TE832B_ohm": "120500.0", "RC_meter_ohm": "120036.0", "err_vs_rated_pct": "0.03", "err_vs_CD800a_pct": "-0.22", "CD800a_spec_uncertainty_pct": "1.62", "note": ""}, {"rated_ohm": "220000.0", "tolerance_pct": "5", "SANWA_CD800a_ohm": "215100.0", "TE832B_ohm": "214000.0", "RC_meter_ohm": "215009.0", "err_vs_rated_pct": "-2.27", "err_vs_CD800a_pct": "-0.04", "CD800a_spec_uncertainty_pct": "1.43", "note": ""}, {"rated_ohm": "470000.0", "tolerance_pct": "5", "SANWA_CD800a_ohm": "466000.0", "TE832B_ohm": "465000.0", "RC_meter_ohm": "467000.0", "err_vs_rated_pct": "-0.64", "err_vs_CD800a_pct": "0.21", "CD800a_spec_uncertainty_pct": "2.27", "note": ""}, {"rated_ohm": "820000.0", "tolerance_pct": "5", "SANWA_CD800a_ohm": "820000.0", "TE832B_ohm": "818000.0", "RC_meter_ohm": "828000.0", "err_vs_rated_pct": "0.98", "err_vs_CD800a_pct": "0.98", "CD800a_spec_uncertainty_pct": "1.81", "note": "reading typed as 8.28k in thesis"}, {"rated_ohm": "1000000.0", "tolerance_pct": "5", "SANWA_CD800a_ohm": "990000.0", "TE832B_ohm": "991000.0", "RC_meter_ohm": "1003000.0", "err_vs_rated_pct": "0.3", "err_vs_CD800a_pct": "1.31", "CD800a_spec_uncertainty_pct": "1.71", "note": ""}, {"rated_ohm": "10000000.0", "tolerance_pct": "5", "SANWA_CD800a_ohm": "9730000.0", "TE832B_ohm": "OL", "RC_meter_ohm": "OL", "err_vs_rated_pct": "", "err_vs_CD800a_pct": "", "CD800a_spec_uncertainty_pct": "", "note": "out of range"}]}, "protocol_frames": {"title": "Serial frame examples", "description": "Example messages from the PIC to the PC app, the formula that decodes each one and what the 2014 app displayed (thesis Experiment 5).", "file": "EP05_protocol_examples.csv", "repo_path": "data/EP05/protocol_examples.csv", "columns": ["frame", "type", "field_1", "field_2", "formula", "GUI_display_2014", "note"], "rows": [{"frame": "1stS233", "type": "resistance", "field_1": "stage 1 (1.49 mA)", "field_2": "N=233", "formula": "233*3.711mV/1.49mA", "GUI_display_2014": "580.311 ohm", "note": "thesis Exp. 5"}, {"frame": "2ndS233", "type": "resistance", "field_1": "stage 2 (0.15 mA)", "field_2": "N=233", "formula": "233*3.711mV/0.15mA", "GUI_display_2014": "5.764 kohm", "note": "thesis Exp. 5"}, {"frame": "3rdS233", "type": "resistance", "field_1": "stage 3 (16.88 uA)", "field_2": "N=233", "formula": "233*3.711mV/16.88uA", "GUI_display_2014": "51.224 kohm", "note": "thesis 'expected' 51.012k used 16.95 uA"}, {"frame": "4thS233", "type": "resistance", "field_1": "stage 4 (1.81 uA)", "field_2": "N=233", "formula": "233*3.711mV/1.81uA", "GUI_display_2014": "0.478 Mohm", "note": "thesis Exp. 5"}, {"frame": "F0R186", "type": "capacitance", "field_1": "0 overflows", "field_2": "186 ticks", "formula": "(186-5)*0.5us/(30k*ln3)", "GUI_display_2014": "2.7459 nF", "note": "GUI subtracts 5 counts; raw = 2.821 nF"}, {"frame": "F47R19192", "type": "capacitance", "field_1": "47 overflows", "field_2": "19192 ticks", "formula": "(47*32.768ms+19192*0.5us)/(30k*ln3)", "GUI_display_2014": "47.020 uF", "note": "thesis Exp. 5"}, {"frame": "F100R40559", "type": "capacitance", "field_1": "100 overflows", "field_2": "40559 ticks", "formula": "(100*32.768ms+40559*0.5us)/(30k*ln3)", "GUI_display_2014": "100.04 uF", "note": "thesis Exp. 5"}, {"frame": "Out of Range!", "type": "status", "field_1": "", "field_2": "", "formula": "", "GUI_display_2014": "OL", "note": ""}, {"frame": "Error!", "type": "status", "field_1": "", "field_2": "", "formula": "", "GUI_display_2014": "Error!", "note": "unknown command"}]}, "spec_claims": {"title": "Thesis claims vs review", "description": "The 2014 thesis's headline claims, the evidence it gave for each, and the status after the 2026 review (file data/EP01/thesis_specification_claims.csv).", "file": "EP01_thesis_specification_claims.csv", "repo_path": "data/EP01/thesis_specification_claims.csv", "columns": ["item", "thesis_claim_2014", "evidence_in_thesis", "status_after_review", "episode"], "rows": [{"item": "Resistance range", "thesis_claim_2014": "100 ohm - 2 Mohm (4 stages)", "evidence_in_thesis": "Exp. 6 tested 1 ohm - 10 Mohm; highest in-range test 1 Mohm", "status_after_review": "<100 ohm unreliable (offset ~1-2 counts); 1-2 Mohm untested", "episode": "EP03/EP06"}, {"item": "Capacitance range", "thesis_claim_2014": "1 nF - 100 uF", "evidence_in_thesis": "Exp. 4 (Proteus) + Exp. 6", "status_after_review": "1 nF read +9 %; 100 uF read 110.18 uF (part tolerance +20 %)", "episode": "EP04/EP06"}, {"item": "Power", "thesis_claim_2014": "USB 5 V (max 5 V / 500 mA)", "evidence_in_thesis": "Kollman & Betten (2005)", "status_after_review": "VBUS 4.75-5.25 V (4.40 V low-power); design is ratiometric", "episode": "EP01/EP03"}, {"item": "Accuracy", "thesis_claim_2014": "\"extremely close\" to other meters; within rated tolerance", "evidence_in_thesis": "Exp. 6 single readings", "status_after_review": "-0.8 to -1.8 % vs CD800a (390 ohm-46 kohm); within CD800a's own +/-(1.2 %+5 dgt)", "episode": "EP06"}, {"item": "Temperature compensation", "thesis_claim_2014": "\"tremendously minimized\" by D1", "evidence_in_thesis": "None (theory only)", "status_after_review": "Untested; estimate ~1-1.5 % per +20 C", "episode": "EP02"}, {"item": "Microcontroller clock", "thesis_claim_2014": "8 MHz (0.5 us Timer1 tick)", "evidence_in_thesis": "Compiler setting Clock=8000000", "status_after_review": "OSCCON never written; PIC16F886 default 4 MHz - verify on hardware", "episode": "EP05"}, {"item": "Cost", "thesis_claim_2014": "RM 81.90 estimated / RM 61.00 actual", "evidence_in_thesis": "Appendix D", "status_after_review": "UC00A bridge = RM 39 (64 %); CH340 UC00C now RM 15.75", "episode": "EP06"}, {"item": "Software", "thesis_claim_2014": "Windows 7 & 8 (64-bit); .NET 4.5", "evidence_in_thesis": "Screenshots", "status_after_review": "All tested Windows versions out of support (7: 2020; 8.1: 2023; 10: Oct 2025)", "episode": "EP05"}]}, "stage_resolution": {"title": "Ohms per ADC count", "description": "Each stage's current, the ohms one ADC count stands for (3.711 mV per count divided by the current) and the full-scale resistance at 1023 counts, worked out for the series from the thesis currents.", "file": "EP03_stage_resolution_table.csv", "repo_path": "data/EP03/stage_resolution_table.csv", "columns": ["stage", "current_A", "ohms_per_count", "max_R_ohm (1023 counts)"], "rows": [{"stage": "1", "current_A": "0.00149", "ohms_per_count": "2.491", "max_R_ohm (1023 counts)": "2547.8"}, {"stage": "2", "current_A": "0.00016", "ohms_per_count": "23.193", "max_R_ohm (1023 counts)": "23726.8"}, {"stage": "3", "current_A": "1.688e-05", "ohms_per_count": "219.842", "max_R_ohm (1023 counts)": "224898.6"}, {"stage": "4", "current_A": "1.82e-06", "ohms_per_count": "2038.977", "max_R_ohm (1023 counts)": "2085873.1"}]}};
+(function () {
+  const store = {}, calcs = {}, listeners = [];
+  for (const [id, d] of Object.entries(window.RC_DATA)) store[id] = { status: 'ok', data: d.rows, columns: d.columns, meta: [] };
+  window.dash = {
+    data: (id) => store[id] || { status: 'missing', data: [], columns: [], meta: [] },
+    calc: (id, spec) => {
+      calcs[id] = spec;
+      try {
+        const out = spec.fn(...spec.inputs.map((i) => (store[i] || { data: [] }).data));
+        store[id] = { status: 'ok', data: out, columns: Array.isArray(out) && out.length ? Object.keys(out[0]) : [], meta: [] };
+      } catch (e) { store[id] = { status: 'error', data: [], message: String(e), meta: [] }; }
+    },
+    onData: (fn) => { listeners.push(fn); fn(); },
+    colors: ['var(--s1)', 'var(--s2)', 'var(--s3)', 'var(--s4)', 'var(--s5)', 'var(--s6)', 'var(--s7)', 'var(--s8)'],
+    setLink: (id) => { try { history.replaceState(null, '', '#' + id); } catch (e) {} },
+    _calcs: calcs,
+  };
+  let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => listeners.forEach((f) => f()), 150); });
+})();
+</script>
+</head>
+<body>
+<div id="dash-root">
+
+
+<div class="rc">
+  <header class="rc-head" id="top">
+    <h1>RC Meter Lab Data</h1>
+    <p class="rc-links">Companion to the video series <b>Building a USB RC Meter</b> · <a href="https://github.com/hamzah-n-mahmood/usb-rc-meter">Files on GitHub</a> · <button type="button" class="rc-src-btn" id="src-open">Sources</button></p>
+    <p class="rc-take" id="takeaway">From 100&nbsp;Ω to 1&nbsp;MΩ the 2014 meter read a median of
+      <span class="dash-skeleton" data-source="res_summary" data-field="median_err_pct" data-row="0">—</span>
+      against the SANWA CD800a, and
+      <span class="dash-skeleton" data-source="res_summary" data-field="inside" data-row="0">—</span> of
+      <span class="dash-skeleton" data-source="res_summary" data-field="parts" data-row="0">—</span>
+      resistors landed inside that meter's own uncertainty. Below 100&nbsp;Ω, a fixed offset of about
+      <span class="dash-skeleton" data-source="low_r_mean" data-field="mean_offset_ohm" data-row="0">—</span>
+      swamps the reading.</p>
+  </header>
+
+  <section class="rc-kpis" id="headlines" aria-label="Headline figures">
+    <div class="rc-kpi" id="kpi-agree">
+      <div class="rc-kpi-num"><span class="dash-skeleton" data-source="res_summary" data-field="inside" data-row="0">—</span> of <span class="dash-skeleton" data-source="res_summary" data-field="parts" data-row="0">—</span></div>
+      <div class="rc-kpi-label">resistors from 100&nbsp;Ω to 1&nbsp;MΩ agreed with the CD800a within its own stated uncertainty (Exp.&nbsp;6)</div>
+    </div>
+    <div class="rc-kpi" id="kpi-median">
+      <div class="rc-kpi-num"><span class="dash-skeleton" data-source="res_summary" data-field="median_err_pct" data-row="0">—</span></div>
+      <div class="rc-kpi-label">median error against the CD800a over the same range: the meter reads slightly low</div>
+    </div>
+    <div class="rc-kpi" id="kpi-cap">
+      <div class="rc-kpi-num"><span class="dash-skeleton" data-source="cap_summary" data-field="within" data-row="0">—</span> of <span class="dash-skeleton" data-source="cap_summary" data-field="parts" data-row="0">—</span></div>
+      <div class="rc-kpi-label">capacitors read inside their rated tolerance (Exp.&nbsp;6)</div>
+    </div>
+    <div class="rc-kpi" id="kpi-offset">
+      <div class="rc-kpi-num"><span class="dash-skeleton" data-source="low_r_mean" data-field="mean_offset_ohm" data-row="0">—</span></div>
+      <div class="rc-kpi-label">average extra reading on resistors below 100&nbsp;Ω: a fixed offset, not a percentage error</div>
+    </div>
+  </section>
+
+  <nav class="rc-tabs" role="tablist" aria-label="Episodes">
+    <button class="rc-tab" role="tab" id="tab-ep1" data-panel="ep1">Ep 1 · Claims check</button>
+    <button class="rc-tab" role="tab" id="tab-ep2" data-panel="ep2">Ep 2 · Current source</button>
+    <button class="rc-tab" role="tab" id="tab-ep3" data-panel="ep3">Ep 3 · Auto-ranging</button>
+    <button class="rc-tab" role="tab" id="tab-ep4" data-panel="ep4">Ep 4 · Capacitance</button>
+    <button class="rc-tab" role="tab" id="tab-ep5" data-panel="ep5">Ep 5 · Serial frames</button>
+    <button class="rc-tab" role="tab" id="tab-ep6" data-panel="ep6">Ep 6 · Accuracy audit</button>
+  </nav>
+
+  <!-- EP1 -->
+  <section class="rc-section" id="ep1" role="tabpanel" aria-labelledby="tab-ep1">
+    <h2>What the thesis promised, and what the review found</h2>
+    <p class="rc-intro">Each line is a claim from the 2014 thesis, the evidence it gave, and the status after the 2026 review. Episode&nbsp;1 sets these up; the episode named in the last column checks each one.</p>
+    <div class="rc-card" id="claims-card">
+      <div class="rc-scroll">
+        <table class="rc-table" id="claims-table" data-source="spec_claims" data-row-key="item">
+          <thead><tr>
+            <th data-field="item">Item</th>
+            <th data-field="thesis_claim_2014">Thesis claim (2014)</th>
+            <th data-field="evidence_in_thesis">Evidence in the thesis</th>
+            <th data-field="status_after_review">Status after review</th>
+            <th data-field="episode">Episode</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- EP2 -->
+  <section class="rc-section" id="ep2" role="tabpanel" aria-labelledby="tab-ep2" hidden>
+    <h2>Does each current source hold its current?</h2>
+    <p class="rc-intro">Experiment&nbsp;1 put a growing resistor on each transistor current source and logged the current. A good source stays flat until the transistor runs out of headroom; then the current falls away.</p>
+    <div class="rc-grid">
+      <div class="rc-card rc-wide" id="cur-card">
+        <h3>Current against the voltage across the resistor</h3>
+        <p class="rc-note">Each stage shown as a percentage of its current with no resistor fitted. The dashed line is 98&nbsp;%.</p>
+        <div class="rc-legend" id="cur-legend" data-source="cur_stages"></div>
+        <div class="rc-chart" id="cur-chart" data-source="cur_norm" style="min-height:300px"></div>
+      </div>
+      <div class="rc-card rc-wide" id="cur-stage-card">
+        <h3>Where each stage stops being a current source</h3>
+        <p class="rc-note">The highest voltage, and resistor, measured before the current fell more than 2&nbsp;% below its starting value.</p>
+        <div class="rc-scroll">
+          <table class="rc-table" id="cur-stage-table" data-source="cur_stages" data-row-key="stage">
+            <thead><tr>
+              <th data-field="stage">Stage</th>
+              <th class="num" data-field="start_uA">Starting current</th>
+              <th class="num" data-field="compliance_V">Holds within 2&nbsp;% up to</th>
+              <th class="num" data-field="max_R_ohm">With a resistor of</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EP3 -->
+  <section class="rc-section" id="ep3" role="tabpanel" aria-labelledby="tab-ep3" hidden>
+    <h2>Which stage should read which resistor?</h2>
+    <p class="rc-intro">Each stage turns one ADC count into a fixed number of ohms. With fewer than 100 counts, one count is worth more than 1&nbsp;% of the reading. That's where auto-ranging should hand over to the next stage down.</p>
+    <div class="rc-grid">
+      <div class="rc-card rc-wide" id="range-card">
+        <h3>Usable range of each stage</h3>
+        <p class="rc-note">Solid: one count is 1&nbsp;% of the reading or better, up to full scale (1023 counts). Pale: 10 to 100 counts, readable but coarse. Dashed lines: the range the thesis claimed.</p>
+        <div class="rc-legend" id="range-legend" data-source="stage_ranges"></div>
+        <div class="rc-chart" id="range-chart" data-source="stage_ranges" style="min-height:240px"></div>
+      </div>
+      <div class="rc-card rc-wide" id="range-table-card">
+        <h3>Stage resolution</h3>
+        <p class="rc-note">Ohms per count = 3.711&nbsp;mV per count ÷ the stage current.</p>
+        <div class="rc-scroll">
+          <table class="rc-table" id="range-table" data-source="stage_resolution" data-row-key="stage">
+            <thead><tr>
+              <th data-field="stage">Stage</th>
+              <th class="num" data-field="current_A">Current</th>
+              <th class="num" data-field="ohms_per_count">Ohms per count</th>
+              <th class="num" data-source="stage_ranges" data-field="r_1pct_ohm">1&nbsp;% floor (100 counts)</th>
+              <th class="num" data-field="max_R_ohm (1023 counts)">Full scale (1023 counts)</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EP4 -->
+  <section class="rc-section" id="ep4" role="tabpanel" aria-labelledby="tab-ep4" hidden>
+    <h2>Why tiny capacitors read high</h2>
+    <p class="rc-intro">Experiment&nbsp;4 simulated the 555 timing circuit in Proteus. Large capacitors read almost perfectly. Tiny ones read far too high: a handful of extra timer counts barely matters in a long pulse, but swamps a short one.</p>
+    <div class="rc-grid">
+      <div class="rc-card rc-wide" id="proteus-card">
+        <h3>Size of the simulated error</h3>
+        <p class="rc-note">Both axes are logarithmic. The dashed line is 1&nbsp;%. The largest capacitor tried returned "Out of Range" and isn't plotted.</p>
+        <div class="rc-chart" id="proteus-chart" data-source="proteus_ok" style="min-height:280px"></div>
+      </div>
+      <div class="rc-card rc-wide" id="proteus-table-card">
+        <h3>Proteus results</h3>
+        <p class="rc-note">"Extra timer counts" is the reading's excess over the ideal pulse, in 0.5&nbsp;µs ticks.</p>
+        <div class="rc-scroll">
+          <table class="rc-table" id="proteus-table" data-source="exp4_proteus" data-row-key="rated_F">
+            <thead><tr>
+              <th data-field="rated_F">Rated</th>
+              <th class="num" data-field="simulated_reading_F">Simulated reading</th>
+              <th class="num" data-field="error_pct">Error</th>
+              <th class="num" data-field="extra_timer_counts">Extra timer counts</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EP5 -->
+  <section class="rc-section" id="ep5" role="tabpanel" aria-labelledby="tab-ep5" hidden>
+    <h2>What the PIC sent, and what the PC showed</h2>
+    <p class="rc-intro">Each frame is a short text message over the serial link. The PC app turns it into a reading with the formula shown. Episode&nbsp;5 decodes each one, including the two firmware bugs.</p>
+    <div class="rc-card" id="frames-card">
+      <div class="rc-scroll">
+        <table class="rc-table" id="frames-table" data-source="protocol_frames" data-row-key="frame">
+          <thead><tr>
+            <th data-field="frame">Frame</th>
+            <th data-field="type">Type</th>
+            <th data-field="field_1">Field 1</th>
+            <th data-field="field_2">Field 2</th>
+            <th data-field="formula">Formula</th>
+            <th data-field="GUI_display_2014">PC app showed</th>
+            <th data-field="note">Note</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- EP6 -->
+  <section class="rc-section" id="ep6" role="tabpanel" aria-labelledby="tab-ep6" hidden>
+    <h2>How close did the meter get?</h2>
+    <p class="rc-intro">Experiment&nbsp;6 measured each part on the RC meter and on commercial meters. The fair question isn't "does it match the label?" but "does it agree with the reference meter within that meter's own uncertainty?"</p>
+    <div class="rc-grid">
+      <div class="rc-card rc-wide" id="res-card">
+        <h3>Resistance error against the CD800a, 100&nbsp;Ω to 1&nbsp;MΩ</h3>
+        <p class="rc-note">Grey bars: the CD800a's own ± uncertainty at each value. A dot inside its bar is as good as the reference can tell. Parts below 100&nbsp;Ω are off this scale; see the next chart.</p>
+        <div class="rc-legend" id="res-legend" data-source="res_inrange"></div>
+        <div class="rc-chart" id="res-chart" data-source="res_inrange" style="min-height:300px"></div>
+      </div>
+      <div class="rc-card" id="lowr-card">
+        <h3>Below 100&nbsp;Ω: a fixed offset</h3>
+        <p class="rc-note">RC meter reading minus the CD800a reading. Roughly the same few ohms whatever the part, so it's an offset (lead and switch resistance, plus a count or two), not a gain error.</p>
+        <div class="rc-chart" id="lowr-chart" data-source="low_r low_r_mean" style="min-height:240px"></div>
+      </div>
+      <div class="rc-card" id="cap-card">
+        <h3>Capacitance error</h3>
+        <p class="rc-note">Grey bars: each part's rated tolerance. Filled dots: error against the rated value. Rings: error against the CD800a.</p>
+        <div class="rc-legend" id="cap-legend" data-source="exp6_capacitance"></div>
+        <div class="rc-chart" id="cap-chart" data-source="exp6_capacitance" style="min-height:240px"></div>
+      </div>
+      <div class="rc-card rc-wide" id="res-table-card">
+        <h3>Every resistor</h3>
+        <p class="rc-note">Readings in ohms. "OL" means over range.</p>
+        <div class="rc-scroll">
+          <table class="rc-table" id="res-table" data-source="exp6_resistance" data-row-key="rated_ohm">
+            <thead><tr>
+              <th data-field="rated_ohm">Rated</th>
+              <th class="num" data-field="tolerance_pct">Tolerance</th>
+              <th class="num" data-field="SANWA_CD800a_ohm">CD800a</th>
+              <th class="num" data-field="TE832B_ohm">TE832B</th>
+              <th class="num" data-field="RC_meter_ohm">RC meter</th>
+              <th class="num" data-field="err_vs_rated_pct">Error vs rated</th>
+              <th class="num" data-field="err_vs_CD800a_pct">Error vs CD800a</th>
+              <th class="num" data-field="CD800a_spec_uncertainty_pct">CD800a uncertainty (±)</th>
+              <th data-source="res_inrange" data-field="inside">Inside it?</th>
+              <th data-field="note">Note</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="rc-card rc-wide" id="cap-table-card">
+        <h3>Every capacitor</h3>
+        <p class="rc-note">"OL" means the CD800a was over range.</p>
+        <div class="rc-scroll">
+          <table class="rc-table" id="cap-table" data-source="exp6_capacitance" data-row-key="rated_F">
+            <thead><tr>
+              <th data-field="rated_F">Rated</th>
+              <th class="num" data-field="tolerance_pct">Tolerance</th>
+              <th class="num" data-field="SANWA_CD800a_F">CD800a</th>
+              <th class="num" data-field="RC_meter_F">RC meter</th>
+              <th class="num" data-field="err_vs_rated_pct">Error vs rated</th>
+              <th class="num" data-field="err_vs_SANWA_pct">Error vs CD800a</th>
+              <th data-field="within_tolerance">Within tolerance</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p class="rc-foot" id="about">Data from the 2014 BEng thesis "Computer-Based RC Meter" (Northumbria University / KDU), as tidied for the six-part video series. Single readings per part, as in the thesis, so treat small differences with care. Open Sources to see each file, or download its rows as CSV.</p>
+</div>
+
+
+<p class="rc-copy">© 2014, 2026 Hamzah Naser Mahmood. Data and page: CC BY-NC 4.0 (free to reuse with credit, not for commercial use).</p>
+</div>
+<dialog id="src-panel" aria-labelledby="src-title"><button type="button" id="src-close">Close</button>
+  <h2 id="src-title">Sources</h2><p class="rc-note">Every number on this page comes from one of these files, or is worked out from them by the calculation shown.</p>
+  <div id="src-list"></div></dialog>
+<script>
+// ---------- calculations ----------
+dash.calc('res_inrange', {
+  inputs: ['exp6_resistance'],
+  title: 'Resistors, 100 Ω to 1 MΩ',
+  description: 'Exp. 6 parts from 100 Ω to 1 MΩ, and whether each error against the CD800a sits inside the CD800a’s own uncertainty.',
+  fn: (exp6_resistance) => exp6_resistance
+    .filter((r) => Number(r.rated_ohm) >= 100 && Number(r.rated_ohm) <= 1e6)
+    .map((r) => ({
+      rated_ohm: r.rated_ohm,
+      err_vs_CD800a_pct: Number(r.err_vs_CD800a_pct),
+      CD800a_spec_uncertainty_pct: Number(r.CD800a_spec_uncertainty_pct),
+      inside: Math.abs(Number(r.err_vs_CD800a_pct)) <= Number(r.CD800a_spec_uncertainty_pct) ? 'yes' : 'no',
+    })),
+});
+
+dash.calc('res_summary', {
+  inputs: ['res_inrange'],
+  title: 'In-range agreement',
+  description: 'How many 100 Ω–1 MΩ parts agree with the CD800a within its uncertainty, and their median error.',
+  fn: (res_inrange) => {
+    const e = res_inrange.map((r) => r.err_vs_CD800a_pct).sort((a, b) => a - b);
+    const n = e.length;
+    const median = n % 2 ? e[(n - 1) / 2] : (e[n / 2 - 1] + e[n / 2]) / 2;
+    return [{ parts: n, inside: res_inrange.filter((r) => r.inside === 'yes').length, median_err_pct: median }];
+  },
+});
+
+dash.calc('low_r', {
+  inputs: ['exp6_resistance'],
+  title: 'Offset below 100 Ω',
+  description: 'For each part below 100 Ω: the RC meter reading minus the CD800a reading, in ohms.',
+  fn: (exp6_resistance) => exp6_resistance
+    .filter((r) => Number(r.rated_ohm) < 100)
+    .map((r) => ({ rated_ohm: r.rated_ohm, offset_ohm: Number(r.RC_meter_ohm) - Number(r.SANWA_CD800a_ohm) })),
+});
+
+dash.calc('low_r_mean', {
+  inputs: ['low_r'],
+  title: 'Average offset below 100 Ω',
+  description: 'The mean of the offsets below 100 Ω.',
+  fn: (low_r) => [{ parts: low_r.length, mean_offset_ohm: low_r.reduce((s, r) => s + r.offset_ohm, 0) / low_r.length }],
+});
+
+dash.calc('cap_summary', {
+  inputs: ['exp6_capacitance'],
+  title: 'Capacitors within tolerance',
+  description: 'How many Exp. 6 capacitors read within their rated tolerance.',
+  fn: (exp6_capacitance) => [{
+    parts: exp6_capacitance.length,
+    within: exp6_capacitance.filter((r) => r.within_tolerance === 'True').length,
+  }],
+});
+
+dash.calc('cur_norm', {
+  inputs: ['exp1_current'],
+  title: 'Current as % of its start',
+  description: 'Each Exp. 1 reading in µA, and as a percentage of that stage’s current with no resistor fitted.',
+  fn: (exp1_current) => {
+    const uA = (r) => Number(r.I_C) * (r.I_unit === 'mA' ? 1000 : 1);
+    const start = {};
+    for (const r of exp1_current) if (Number(r.R_DUT_ohm) === 0) start[r.stage] = uA(r);
+    return exp1_current.map((r) => ({
+      stage: r.stage,
+      R_DUT_ohm: Number(r.R_DUT_ohm),
+      V_RDUT_V: Number(r.V_RDUT_V),
+      I_uA: uA(r),
+      pct_of_start: (uA(r) / start[r.stage]) * 100,
+    }));
+  },
+});
+
+dash.calc('cur_stages', {
+  inputs: ['cur_norm'],
+  title: 'Headroom per stage',
+  description: 'For each stage: its starting current, and the last voltage and resistor before the current fell more than 2 % below it.',
+  fn: (cur_norm) => {
+    const out = [];
+    for (const stage of [...new Set(cur_norm.map((r) => r.stage))]) {
+      const rows = cur_norm.filter((r) => r.stage === stage).sort((a, b) => a.R_DUT_ohm - b.R_DUT_ohm);
+      let last = rows[0];
+      for (const r of rows) { if (r.pct_of_start < 98) break; last = r; }
+      out.push({ stage, start_uA: rows[0].I_uA, compliance_V: last.V_RDUT_V, max_R_ohm: last.R_DUT_ohm });
+    }
+    return out;
+  },
+});
+
+dash.calc('stage_ranges', {
+  inputs: ['stage_resolution'],
+  title: 'Usable range per stage',
+  description: 'Lower edge: the resistance giving 100 ADC counts, where one count is 1 % of the reading. Upper edge: full scale at 1023 counts.',
+  fn: (stage_resolution) => stage_resolution.map((r) => ({
+    stage: r.stage,
+    ohms_per_count: Number(r.ohms_per_count),
+    r_10count_ohm: Number(r.ohms_per_count) * 10,
+    r_1pct_ohm: Number(r.ohms_per_count) * 100,
+    max_R_ohm: Number(r['max_R_ohm (1023 counts)']),
+  })),
+});
+
+dash.calc('proteus_ok', {
+  inputs: ['exp4_proteus'],
+  title: 'Simulated readings in range',
+  description: 'The Proteus readings that returned a value, with the size of each error.',
+  fn: (exp4_proteus) => exp4_proteus
+    .filter((r) => r.error_pct != null && r.error_pct !== '')
+    .map((r) => ({ rated_F: r.rated_F, rated: Number(r.rated_F), error_pct: Number(r.error_pct), abs_error_pct: Math.abs(Number(r.error_pct)) })),
+});
+
+// ---------- formatting ----------
+const PREFIX = [[1e6, 'M'], [1e3, 'k'], [1, ''], [1e-3, 'm'], [1e-6, 'µ'], [1e-9, 'n'], [1e-12, 'p']];
+const si = (v, unit, digits = 4) => {
+  if (v == null || v === '' || !isFinite(Number(v))) return v == null ? '' : String(v);
+  const n = Number(v);
+  if (n === 0) return `0 ${unit}`;
+  for (const [s, p] of PREFIX) if (Math.abs(n) >= s * 0.9995) return `${+(n / s).toPrecision(digits)} ${p}${unit}`;
+  return `${+(n / 1e-12).toPrecision(digits)} p${unit}`;
+};
+const pct = (v, digits = 2) => {
+  if (v == null || v === '' || !isFinite(Number(v))) return v == null ? '' : String(v);
+  const n = Number(v);
+  return `${n > 0 ? '+' : n < 0 ? '−' : ''}${Math.abs(+n.toFixed(digits))} %`;
+};
+const ohms = (v) => (isFinite(Number(v)) && v !== '' ? si(v, 'Ω', 6) : v);
+const farads = (v) => (isFinite(Number(v)) && v !== '' ? si(v, 'F', 5) : v);
+const yesNo = (v) => (v === 'True' || v === 'yes' ? 'Yes' : v === 'False' || v === 'no' ? 'No' : v);
+
+// ---------- small helpers ----------
+const ok = (...ids) => ids.every((id) => dash.data(id).status === 'ok');
+const failed = (...ids) => ids.some((id) => dash.data(id).status === 'error');
+
+function prepBox(box, ids) {
+  box.querySelectorAll('svg, .rc-fail').forEach((n) => n.remove());
+  const tip = box.querySelector('.rc-tip');
+  if (tip) tip.hidden = true;
+  if (ok(...ids)) { box.classList.remove('dash-skeleton'); return true; }
+  if (failed(...ids)) {
+    box.classList.remove('dash-skeleton');
+    const f = document.createElement('div');
+    f.className = 'rc-fail';
+    f.textContent = 'Failed to load';
+    box.appendChild(f);
+  } else box.classList.add('dash-skeleton');
+  return false;
+}
+
+const styleAxis = (g) => g.attr('font-size', null).attr('font-family', null)
+  .call((s) => s.select('.domain').remove())
+  .call((s) => s.selectAll('.tick line').remove())
+  .call((s) => s.selectAll('text').style('fill', 'var(--color-fg-muted)').style('font-size', 'var(--cds-font-size-caption)'));
+
+function base(box, H, y, yTicks, yFmt) {
+  const W = Math.max(260, box.clientWidth);
+  const svg = d3.select(box).append('svg').attr('width', '100%').attr('height', H).attr('viewBox', `0 0 ${W} ${H}`);
+  const grid = svg.append('g');
+  const yg = svg.append('g').call(d3.axisLeft(y).tickValues(yTicks).tickFormat(yFmt).tickSize(0).tickPadding(0)).call(styleAxis);
+  const ml = Math.ceil(yg.node().getBBox().width) + 12;
+  yg.attr('transform', `translate(${ml - 8},0)`);
+  return { svg, W, ml, grid };
+}
+
+function xAxis(svg, x, ticks, fmt, yPos) {
+  const g = svg.append('g').attr('transform', `translate(0,${yPos})`)
+    .call(d3.axisBottom(x).tickValues(ticks).tickFormat(fmt).tickSize(0).tickPadding(6)).call(styleAxis);
+  return g;
+}
+
+function gridLines(grid, ticks, y, x0, x1) {
+  grid.selectAll('line').data(ticks).join('line')
+    .attr('x1', x0).attr('x2', x1).attr('y1', (d) => y(d)).attr('y2', (d) => y(d))
+    .style('stroke', 'var(--cds-chart-grid)').style('stroke-width', 1);
+}
+
+function showTip(box, px, py, head, lines) {
+  let t = box.querySelector('.rc-tip');
+  if (!t) { t = document.createElement('div'); t.className = 'rc-tip'; box.appendChild(t); }
+  t.replaceChildren();
+  const h = document.createElement('div');
+  h.className = 'rc-tip-head';
+  h.textContent = head;
+  t.appendChild(h);
+  for (const [color, text] of lines) {
+    const row = document.createElement('div');
+    if (color) { const s = document.createElement('span'); s.className = 'rc-sw'; s.style.background = color; row.appendChild(s); }
+    row.append(text);
+    t.appendChild(row);
+  }
+  t.hidden = false;
+  const bw = box.clientWidth, tw = t.offsetWidth, th = t.offsetHeight;
+  let left = px + 14;
+  if (left + tw > bw) left = px - 14 - tw;
+  t.style.left = `${Math.max(0, left)}px`;
+  t.style.top = `${Math.max(0, Math.min(py - th / 2, box.clientHeight - th))}px`;
+}
+const hideTip = (box) => { const t = box.querySelector('.rc-tip'); if (t) t.hidden = true; };
+
+function hover(svg, box, pts, xy, tipFor, area) {
+  const ring = svg.append('circle').attr('r', 7).style('fill', 'none').style('stroke-width', 2).style('pointer-events', 'none').attr('visibility', 'hidden');
+  svg.append('rect').attr('x', area[0]).attr('y', area[1]).attr('width', Math.max(0, area[2] - area[0])).attr('height', Math.max(0, area[3] - area[1]))
+    .style('fill', 'transparent')
+    .on('pointermove', (ev) => {
+      const [mx, my] = d3.pointer(ev, svg.node());
+      const d = d3.least(pts, (p) => { const [a, b] = xy(p); return (a - mx) ** 2 + (b - my) ** 2; });
+      if (!d) return;
+      const [a, b] = xy(d);
+      const t = tipFor(d);
+      ring.attr('cx', a).attr('cy', b).style('stroke', t.color || 'var(--color-fg)').attr('visibility', 'visible');
+      showTip(box, a, b, t.head, t.lines);
+    })
+    .on('pointerleave', () => { ring.attr('visibility', 'hidden'); hideTip(box); });
+}
+
+function legend(el, items) {
+  el.replaceChildren();
+  for (const [kind, color, text] of items) {
+    const span = document.createElement('span');
+    const sw = document.createElement('i');
+    sw.className = `rc-sw${kind === 'bar' ? ' rc-sw-bar' : kind === 'ring' ? ' rc-sw-ring' : kind === 'dash' ? ' rc-sw-dash' : ''}`;
+    if (kind === 'ring') sw.style.borderColor = color; else if (kind !== 'dash') sw.style.background = color;
+    span.append(sw, text);
+    el.appendChild(span);
+  }
+}
+
+function fillTable(id, cols, lookups = {}) {
+  const tbl = document.getElementById(id);
+  const tb = tbl.tBodies[0];
+  const src = tbl.dataset.source;
+  const ds = dash.data(src);
+  tb.replaceChildren();
+  if (ds.status !== 'ok') { tbl.classList.toggle('dash-skeleton', !failed(src)); return; }
+  tbl.classList.remove('dash-skeleton');
+  const key = tbl.dataset.rowKey;
+  const maps = {};
+  for (const [lid, lkey] of Object.entries(lookups)) {
+    const l = dash.data(lid);
+    maps[lid] = new Map((l.status === 'ok' ? l.data : []).map((r) => [String(r[lkey]), r]));
+  }
+  for (const r of ds.data) {
+    const tr = document.createElement('tr');
+    tr.dataset.key = r[key];
+    for (const c of cols) {
+      const td = document.createElement('td');
+      const raw = c.from ? maps[c.from].get(String(r[key]))?.[c.f] : r[c.f];
+      td.textContent = raw == null || raw === '' ? '' : c.fmt ? c.fmt(raw, r) : String(raw);
+      if (c.num) td.classList.add('num');
+      if (c.wrap) td.classList.add('rc-wrap');
+      const cls = c.cls && c.cls(raw, r);
+      if (cls) td.classList.add(cls);
+      tr.appendChild(td);
+    }
+    tb.appendChild(tr);
+  }
+}
+
+// ---------- charts ----------
+function drawCurrent() {
+  const box = document.getElementById('cur-chart');
+  const leg = document.getElementById('cur-legend');
+  if (!prepBox(box, ['exp1_current', 'cur_norm', 'cur_stages'])) { leg.replaceChildren(); return; }
+  const rows = dash.data('cur_norm').data;
+  const stages = dash.data('cur_stages').data;
+  const color = (s) => dash.colors[(stages.findIndex((t) => t.stage === s) + dash.colors.length) % dash.colors.length];
+  legend(leg, [...stages.map((s) => ['dot', color(s.stage), `Stage ${s.stage} · ${si(s.start_uA * 1e-6, 'A', 3)}`]), ['dash', '', '98 %']]);
+  const H = 300, mb = 30, mt = 10, mr = 16;
+  const y = d3.scaleLinear([50, 106], [H - mb, mt]);
+  const yt = [50, 60, 70, 80, 90, 100];
+  const { svg, W, ml, grid } = base(box, H, y, yt, (d) => `${d} %`);
+  const x = d3.scaleLinear([0, 4.5], [ml, W - mr]);
+  gridLines(grid, yt, y, ml, W - mr);
+  xAxis(svg, x, W < 420 ? [0, 1, 2, 3, 4] : [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5], (d) => `${d} V`, H - mb + 2);
+  svg.append('line').attr('x1', ml).attr('x2', W - mr).attr('y1', y(98)).attr('y2', y(98))
+    .style('stroke', 'var(--cds-chart-reference)').style('stroke-width', 1.5).style('stroke-dasharray', '4 4');
+  const line = d3.line().x((d) => x(d.V_RDUT_V)).y((d) => y(d.pct_of_start));
+  for (const s of stages) {
+    const pts = rows.filter((r) => r.stage === s.stage).sort((a, b) => a.R_DUT_ohm - b.R_DUT_ohm);
+    svg.append('path').datum(pts).attr('d', line)
+      .style('fill', 'none').style('stroke', color(s.stage)).style('stroke-width', 2).style('stroke-linecap', 'round').style('stroke-linejoin', 'round');
+    svg.append('g').selectAll('circle').data(pts).join('circle')
+      .attr('cx', (d) => x(d.V_RDUT_V)).attr('cy', (d) => y(d.pct_of_start)).attr('r', 2.5).style('fill', color(s.stage));
+  }
+  hover(svg, box, rows, (d) => [x(d.V_RDUT_V), y(d.pct_of_start)], (d) => ({
+    color: color(d.stage),
+    head: `Stage ${d.stage} · ${ohms(d.R_DUT_ohm)} fitted`,
+    lines: [[color(d.stage), `${si(d.I_uA * 1e-6, 'A', 4)} (${d.pct_of_start.toFixed(1)} % of start)`], ['', `${d.V_RDUT_V} V across the resistor`]],
+  }), [ml, mt, W - mr, H - mb]);
+}
+
+function drawRanges() {
+  const box = document.getElementById('range-chart');
+  const leg = document.getElementById('range-legend');
+  if (!prepBox(box, ['stage_resolution', 'stage_ranges'])) { leg.replaceChildren(); return; }
+  const rows = dash.data('stage_ranges').data;
+  legend(leg, [['bar', dash.colors[0], 'one count ≤ 1 % of reading'], ['bar', 'var(--cds-chart-muted)', '10–100 counts (coarse)'], ['dash', '', 'thesis claim: 100 Ω to 2 MΩ']]);
+  const H = 40 + rows.length * 44, mb = 30, mt = 18, mr = 18;
+  const y = d3.scaleBand(rows.map((r) => r.stage), [mt, H - mb]).padding(0.35);
+  const { svg, W, ml } = base(box, H, y, rows.map((r) => r.stage), (d) => `Stage ${d}`);
+  const x = d3.scaleLog([2, 4e6], [ml, W - mr]);
+  const decades = W < 420 ? [10, 1e3, 1e5] : [10, 100, 1e3, 1e4, 1e5, 1e6];
+  svg.append('g').selectAll('line').data(decades).join('line')
+    .attr('x1', (d) => x(d)).attr('x2', (d) => x(d)).attr('y1', mt).attr('y2', H - mb)
+    .style('stroke', 'var(--cds-chart-grid)');
+  xAxis(svg, x, decades, (d) => si(d, 'Ω'), H - mb + 2);
+  for (const c of [100, 2e6]) {
+    svg.append('line').attr('x1', x(c)).attr('x2', x(c)).attr('y1', mt - 6).attr('y2', H - mb)
+      .style('stroke', 'var(--cds-chart-reference)').style('stroke-width', 1.5).style('stroke-dasharray', '4 4');
+  }
+  const bh = y.bandwidth();
+  svg.append('g').selectAll('rect').data(rows).join('rect')
+    .attr('x', (d) => x(d.r_10count_ohm)).attr('width', (d) => x(d.r_1pct_ohm) - x(d.r_10count_ohm))
+    .attr('y', (d) => y(d.stage)).attr('height', bh).attr('rx', 4).style('fill', 'var(--cds-chart-muted)');
+  svg.append('g').selectAll('rect').data(rows).join('rect')
+    .attr('x', (d) => x(d.r_1pct_ohm)).attr('width', (d) => x(d.max_R_ohm) - x(d.r_1pct_ohm))
+    .attr('y', (d) => y(d.stage)).attr('height', bh).attr('rx', 4).style('fill', dash.colors[0]);
+  hover(svg, box, rows, (d) => [x(Math.sqrt(d.r_1pct_ohm * d.max_R_ohm)), y(d.stage) + bh / 2], (d) => ({
+    color: dash.colors[0],
+    head: `Stage ${d.stage} · ${si(d.ohms_per_count, 'Ω', 4)} per count`,
+    lines: [[dash.colors[0], `1 % or better: ${ohms(d.r_1pct_ohm)} to ${ohms(d.max_R_ohm)}`], ['var(--cds-chart-muted)', `coarse: ${ohms(d.r_10count_ohm)} to ${ohms(d.r_1pct_ohm)}`]],
+  }), [ml, mt, W - mr, H - mb]);
+}
+
+function drawProteus() {
+  const box = document.getElementById('proteus-chart');
+  if (!prepBox(box, ['exp4_proteus', 'proteus_ok'])) return;
+  const rows = dash.data('proteus_ok').data.slice().sort((a, b) => a.rated - b.rated);
+  const H = 280, mb = 30, mt = 18, mr = 24;
+  const y = d3.scaleLog([0.01, 1000], [H - mb, mt]);
+  const yt = [0.01, 0.1, 1, 10, 100, 1000];
+  const { svg, W, ml, grid } = base(box, H, y, yt, (d) => `${d3.format('~g')(d)} %`);
+  const x = d3.scaleLog([8e-12, 3e-4], [ml, W - mr]);
+  gridLines(grid, yt, y, ml, W - mr);
+  xAxis(svg, x, W < 420 ? [1e-11, 1e-8, 1e-5] : [1e-11, 1e-10, 1e-9, 1e-8, 1e-7, 1e-6, 1e-5, 1e-4], (d) => si(d, 'F'), H - mb + 2);
+  svg.append('line').attr('x1', ml).attr('x2', W - mr).attr('y1', y(1)).attr('y2', y(1))
+    .style('stroke', 'var(--cds-chart-reference)').style('stroke-width', 1.5).style('stroke-dasharray', '4 4');
+  const line = d3.line().x((d) => x(d.rated)).y((d) => y(Math.max(0.01, d.abs_error_pct)));
+  svg.append('path').datum(rows).attr('d', line)
+    .style('fill', 'none').style('stroke', dash.colors[0]).style('stroke-width', 2).style('stroke-linecap', 'round').style('stroke-linejoin', 'round');
+  svg.append('g').selectAll('circle').data(rows).join('circle')
+    .attr('cx', (d) => x(d.rated)).attr('cy', (d) => y(Math.max(0.01, d.abs_error_pct))).attr('r', 4)
+    .style('fill', (d) => (d.abs_error_pct > 1 ? 'var(--cds-chart-status-critical)' : dash.colors[0]));
+  svg.append('g').selectAll('text').data(rows.filter((d) => d.abs_error_pct > 1)).join('text')
+    .attr('x', (d) => x(d.rated) + 8).attr('y', (d) => y(d.abs_error_pct) - 6)
+    .style('fill', 'var(--color-fg)').style('font-size', 'var(--cds-font-size-caption)')
+    .text((d) => pct(d.error_pct, 1));
+  hover(svg, box, rows, (d) => [x(d.rated), y(Math.max(0.01, d.abs_error_pct))], (d) => ({
+    color: d.abs_error_pct > 1 ? 'var(--cds-chart-status-critical)' : dash.colors[0],
+    head: `Rated ${farads(d.rated)}`,
+    lines: [['', `Simulated error ${pct(d.error_pct, 2)}`]],
+  }), [ml, mt, W - mr, H - mb]);
+}
+
+function drawResAccuracy() {
+  const box = document.getElementById('res-chart');
+  const leg = document.getElementById('res-legend');
+  if (!prepBox(box, ['exp6_resistance', 'res_inrange'])) { leg.replaceChildren(); return; }
+  const rows = dash.data('res_inrange').data.map((r) => ({ ...r, R: Number(r.rated_ohm) }));
+  const bad = 'var(--cds-chart-status-critical)';
+  legend(leg, [['dot', dash.colors[0], 'inside the CD800a’s uncertainty'], ['dot', bad, 'outside it'], ['bar', 'var(--cds-chart-muted)', 'CD800a ± uncertainty']]);
+  const H = 300, mb = 30, mt = 10, mr = 18;
+  const y = d3.scaleLinear([-3.5, 3.5], [H - mb, mt]);
+  const yt = [-3, -2, -1, 0, 1, 2, 3];
+  const { svg, W, ml, grid } = base(box, H, y, yt, (d) => (d === 0 ? '0 %' : `${d > 0 ? '+' : '−'}${Math.abs(d)} %`));
+  const x = d3.scaleLog([75, 1.4e6], [ml, W - mr]);
+  gridLines(grid, yt, y, ml, W - mr);
+  svg.append('line').attr('x1', ml).attr('x2', W - mr).attr('y1', y(0)).attr('y2', y(0)).style('stroke', 'var(--cds-chart-axis)');
+  xAxis(svg, x, W < 420 ? [100, 1e4, 1e6] : [100, 1e3, 1e4, 1e5, 1e6], (d) => si(d, 'Ω'), H - mb + 2);
+  const bw = Math.max(5, Math.min(10, (W - ml - mr) / rows.length / 2));
+  svg.append('g').selectAll('rect').data(rows).join('rect')
+    .attr('x', (d) => x(d.R) - bw / 2).attr('width', bw)
+    .attr('y', (d) => y(d.CD800a_spec_uncertainty_pct)).attr('height', (d) => y(-d.CD800a_spec_uncertainty_pct) - y(d.CD800a_spec_uncertainty_pct))
+    .attr('rx', 4).style('fill', 'var(--cds-chart-muted)').style('opacity', 0.55);
+  svg.append('g').selectAll('circle').data(rows).join('circle')
+    .attr('cx', (d) => x(d.R)).attr('cy', (d) => y(d.err_vs_CD800a_pct)).attr('r', 4.5)
+    .style('fill', (d) => (d.inside === 'yes' ? dash.colors[0] : bad));
+  hover(svg, box, rows, (d) => [x(d.R), y(d.err_vs_CD800a_pct)], (d) => ({
+    color: d.inside === 'yes' ? dash.colors[0] : bad,
+    head: `Rated ${ohms(d.R)}`,
+    lines: [[d.inside === 'yes' ? dash.colors[0] : bad, `Error vs CD800a ${pct(d.err_vs_CD800a_pct)}`], ['var(--cds-chart-muted)', `CD800a uncertainty ±${d.CD800a_spec_uncertainty_pct} %`]],
+  }), [ml, mt, W - mr, H - mb]);
+}
+
+function drawLowR() {
+  const box = document.getElementById('lowr-chart');
+  if (!prepBox(box, ['exp6_resistance', 'low_r', 'low_r_mean'])) return;
+  const rows = dash.data('low_r').data;
+  const mean = dash.data('low_r_mean').data[0].mean_offset_ohm;
+  const H = 240, mb = 30, mt = 22, mr = 12;
+  const y = d3.scaleLinear([0, 6], [H - mb, mt]);
+  const yt = [0, 2, 4, 6];
+  const { svg, W, ml, grid } = base(box, H, y, yt, (d) => `${d} Ω`);
+  gridLines(grid, yt, y, ml, W - mr);
+  const x = d3.scaleBand(rows.map((r) => r.rated_ohm), [ml, W - mr]).padding(0.35);
+  xAxis(svg, x, rows.map((r) => r.rated_ohm), (d) => ohms(d), H - mb + 2);
+  const bw = Math.min(32, x.bandwidth());
+  const bx = (d) => x(d.rated_ohm) + (x.bandwidth() - bw) / 2;
+  svg.append('g').selectAll('rect').data(rows).join('rect')
+    .attr('x', bx).attr('width', bw).attr('y', (d) => y(d.offset_ohm)).attr('height', (d) => y(0) - y(d.offset_ohm))
+    .attr('rx', 4).style('fill', dash.colors[0]);
+  svg.append('g').selectAll('text').data(rows).join('text')
+    .attr('x', (d) => bx(d) + bw / 2).attr('y', (d) => y(d.offset_ohm) - 6).attr('text-anchor', 'middle')
+    .style('fill', 'var(--color-fg)').style('font-size', 'var(--cds-font-size-caption)').style('font-variant-numeric', 'tabular-nums')
+    .text((d) => `+${d.offset_ohm.toFixed(1)}`);
+  svg.append('line').attr('x1', ml).attr('x2', W - mr).attr('y1', y(mean)).attr('y2', y(mean))
+    .style('stroke', 'var(--cds-chart-reference)').style('stroke-width', 1.5).style('stroke-dasharray', '4 4');
+  svg.append('text').attr('x', W - mr).attr('y', y(mean) + 14).attr('text-anchor', 'end')
+    .style('fill', 'var(--color-fg-muted)').style('font-size', 'var(--cds-font-size-caption)')
+    .text(`average +${mean.toFixed(1)} Ω`);
+  hover(svg, box, rows, (d) => [bx(d) + bw / 2, y(d.offset_ohm)], (d) => ({
+    color: dash.colors[0],
+    head: `Rated ${ohms(d.rated_ohm)}`,
+    lines: [['', `RC meter read ${d.offset_ohm.toFixed(3)} Ω more than the CD800a`]],
+  }), [ml, mt, W - mr, H - mb]);
+}
+
+function drawCap() {
+  const box = document.getElementById('cap-chart');
+  const leg = document.getElementById('cap-legend');
+  if (!prepBox(box, ['exp6_capacitance'])) { leg.replaceChildren(); return; }
+  const bad = 'var(--cds-chart-status-critical)';
+  legend(leg, [['dot', dash.colors[0], 'vs rated'], ['dot', bad, 'outside tolerance'], ['ring', dash.colors[1], 'vs CD800a'], ['bar', 'var(--cds-chart-muted)', 'rated tolerance']]);
+  const rows = dash.data('exp6_capacitance').data.map((r) => ({
+    rated_F: r.rated_F, C: Number(r.rated_F), tol: Number(r.tolerance_pct), eR: Number(r.err_vs_rated_pct),
+    eS: r.err_vs_SANWA_pct === '' || r.err_vs_SANWA_pct == null ? null : Number(r.err_vs_SANWA_pct), within: r.within_tolerance === 'True',
+  }));
+  const H = 240, mb = 30, mt = 10, mr = 16;
+  const y = d3.scaleLinear([-30, 25], [H - mb, mt]);
+  const yt = [-30, -20, -10, 0, 10, 20];
+  const { svg, W, ml, grid } = base(box, H, y, yt, (d) => (d === 0 ? '0 %' : `${d > 0 ? '+' : '−'}${Math.abs(d)} %`));
+  gridLines(grid, yt, y, ml, W - mr);
+  svg.append('line').attr('x1', ml).attr('x2', W - mr).attr('y1', y(0)).attr('y2', y(0)).style('stroke', 'var(--cds-chart-axis)');
+  const x = d3.scaleLog([6e-10, 1.7e-4], [ml, W - mr]);
+  xAxis(svg, x, W < 480 ? [1e-9, 1e-7, 1e-5] : [1e-9, 1e-8, 1e-7, 1e-6, 1e-5, 1e-4], (d) => si(d, 'F'), H - mb + 2);
+  const bw = 8;
+  svg.append('g').selectAll('rect').data(rows).join('rect')
+    .attr('x', (d) => x(d.C) - bw / 2).attr('width', bw).attr('y', (d) => y(d.tol)).attr('height', (d) => y(-d.tol) - y(d.tol))
+    .attr('rx', 4).style('fill', 'var(--cds-chart-muted)').style('opacity', 0.55);
+  svg.append('g').selectAll('circle').data(rows.filter((d) => d.eS != null)).join('circle')
+    .attr('cx', (d) => x(d.C)).attr('cy', (d) => y(d.eS)).attr('r', 4.5)
+    .style('fill', 'none').style('stroke', dash.colors[1]).style('stroke-width', 2);
+  svg.append('g').selectAll('circle').data(rows).join('circle')
+    .attr('cx', (d) => x(d.C)).attr('cy', (d) => y(d.eR)).attr('r', 4.5)
+    .style('fill', (d) => (d.within ? dash.colors[0] : bad));
+  hover(svg, box, rows, (d) => [x(d.C), y(d.eR)], (d) => ({
+    color: d.within ? dash.colors[0] : bad,
+    head: `Rated ${farads(d.C)} ± ${d.tol} %`,
+    lines: [[d.within ? dash.colors[0] : bad, `vs rated ${pct(d.eR)}`], [dash.colors[1], d.eS == null ? 'CD800a over range' : `vs CD800a ${pct(d.eS)}`]],
+  }), [ml, mt, W - mr, H - mb]);
+}
+
+// ---------- tables ----------
+function drawTables() {
+  fillTable('claims-table', [
+    { f: 'item' }, { f: 'thesis_claim_2014', wrap: true }, { f: 'evidence_in_thesis', wrap: true },
+    { f: 'status_after_review', wrap: true }, { f: 'episode' },
+  ]);
+  fillTable('cur-stage-table', [
+    { f: 'stage' },
+    { f: 'start_uA', num: true, fmt: (v) => si(v * 1e-6, 'A', 4) },
+    { f: 'compliance_V', num: true, fmt: (v) => `${v} V` },
+    { f: 'max_R_ohm', num: true, fmt: ohms },
+  ]);
+  fillTable('range-table', [
+    { f: 'stage' },
+    { f: 'current_A', num: true, fmt: (v) => si(v, 'A', 4) },
+    { f: 'ohms_per_count', num: true, fmt: (v) => `${v} Ω` },
+    { from: 'stage_ranges', f: 'r_1pct_ohm', num: true, fmt: (v) => si(v, 'Ω', 4) },
+    { f: 'max_R_ohm (1023 counts)', num: true, fmt: (v) => si(v, 'Ω', 5) },
+  ], { stage_ranges: 'stage' });
+  fillTable('proteus-table', [
+    { f: 'rated_F', fmt: farads },
+    { f: 'simulated_reading_F', num: true, fmt: farads },
+    { f: 'error_pct', num: true, fmt: (v) => pct(v), cls: (v) => (v !== '' && Math.abs(Number(v)) > 1 ? 'rc-badv' : '') },
+    { f: 'extra_timer_counts', num: true },
+  ]);
+  fillTable('frames-table', [
+    { f: 'frame' }, { f: 'type' }, { f: 'field_1' }, { f: 'field_2' }, { f: 'formula', wrap: true },
+    { f: 'GUI_display_2014' }, { f: 'note', wrap: true },
+  ]);
+  fillTable('res-table', [
+    { f: 'rated_ohm', fmt: ohms },
+    { f: 'tolerance_pct', num: true, fmt: (v) => `±${v} %` },
+    { f: 'SANWA_CD800a_ohm', num: true, fmt: ohms },
+    { f: 'TE832B_ohm', num: true, fmt: ohms },
+    { f: 'RC_meter_ohm', num: true, fmt: ohms },
+    { f: 'err_vs_rated_pct', num: true, fmt: (v) => pct(v) },
+    { f: 'err_vs_CD800a_pct', num: true, fmt: (v) => pct(v) },
+    { f: 'CD800a_spec_uncertainty_pct', num: true, fmt: (v) => `±${v} %` },
+    { from: 'res_inrange', f: 'inside', fmt: yesNo, cls: (v) => (v === 'yes' ? 'rc-good' : v === 'no' ? 'rc-badv' : '') },
+    { f: 'note', wrap: true },
+  ], { res_inrange: 'rated_ohm' });
+  fillTable('cap-table', [
+    { f: 'rated_F', fmt: farads },
+    { f: 'tolerance_pct', num: true, fmt: (v) => `±${v} %` },
+    { f: 'SANWA_CD800a_F', num: true, fmt: farads },
+    { f: 'RC_meter_F', num: true, fmt: farads },
+    { f: 'err_vs_rated_pct', num: true, fmt: (v) => pct(v) },
+    { f: 'err_vs_SANWA_pct', num: true, fmt: (v) => pct(v) },
+    { f: 'within_tolerance', fmt: yesNo, cls: (v) => (v === 'True' ? 'rc-good' : v === 'False' ? 'rc-badv' : '') },
+  ]);
+}
+
+// ---------- header figures ----------
+function drawHeader() {
+  const set = (src, field, fmt) => {
+    const d = dash.data(src);
+    document.querySelectorAll(`[data-source="${src}"][data-field="${field}"][data-row="0"]`).forEach((el) => {
+      if (d.status === 'ok' && d.data.length) { el.textContent = fmt(d.data[0][field]); el.classList.remove('dash-skeleton'); }
+      else { el.textContent = '—'; el.classList.toggle('dash-skeleton', d.status === 'loading'); }
+    });
+  };
+  set('res_summary', 'parts', String);
+  set('res_summary', 'inside', String);
+  set('res_summary', 'median_err_pct', (v) => pct(v));
+  set('cap_summary', 'parts', String);
+  set('cap_summary', 'within', String);
+  set('low_r_mean', 'mean_offset_ohm', (v) => `+${Number(v).toFixed(1)} Ω`);
+}
+
+// ---------- tabs and links ----------
+const TAB_DRAW = { ep2: [drawCurrent], ep3: [drawRanges], ep4: [drawProteus], ep6: [drawResAccuracy, drawLowR, drawCap] };
+const tabs = [...document.querySelectorAll('.rc-tab')];
+let current = 'ep1';
+
+function drawVisible() { (TAB_DRAW[current] || []).forEach((f) => f()); }
+
+function showTab(id, link) {
+  current = id;
+  for (const t of tabs) {
+    const on = t.dataset.panel === id;
+    t.setAttribute('aria-selected', on ? 'true' : 'false');
+    t.tabIndex = on ? 0 : -1;
+    document.getElementById(t.dataset.panel).hidden = !on;
+  }
+  if (link) dash.setLink(id);
+  drawVisible();
+}
+
+tabs.forEach((t) => t.addEventListener('click', () => showTab(t.dataset.panel, true)));
+
+dash.onData(() => {
+  drawHeader();
+  drawTables();
+  drawVisible();
+});
+
+const named = document.getElementById(location.hash.slice(1));
+if (named) {
+  const panel = named.closest('.rc-section');
+  showTab(panel ? panel.id : current, false);
+  named.scrollIntoView();
+  dash.setLink(named.id);
+} else showTab(current, false);
+</script>
+
+<script>
+// Sources: the files (with downloads) and the calculations (with their code), plus a source line under each card.
+(function () {
+  const D = window.RC_DATA, C = dash._calcs;
+  const files = (id, seen = new Set()) => {
+    if (seen.has(id)) return []; seen.add(id);
+    if (D[id]) return [id];
+    return C[id] ? C[id].inputs.flatMap((i) => files(i, seen)) : [];
+  };
+  const list = document.getElementById('src-list');
+  const add = (html) => { const d = document.createElement('div'); d.className = 'item'; d.innerHTML = html; list.appendChild(d); };
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  list.insertAdjacentHTML('beforeend', '<h3>Data files</h3>');
+  for (const [id, d] of Object.entries(D))
+    add(`<b>${esc(d.title)}</b> · <a href="data/${esc(d.file)}" download>download ${esc(d.file)}</a><p>${esc(d.description)}</p><p>${d.rows.length} rows · columns: ${esc(d.columns.join(', '))}</p>`);
+  list.insertAdjacentHTML('beforeend', '<h3>Calculations</h3>');
+  for (const [id, c] of Object.entries(C))
+    add(`<b>${esc(c.title || id)}</b><p>${esc(c.description || '')}</p><p>From: ${esc(files(id).map((f) => D[f].file).join(', '))}</p><pre>${esc(String(c.fn))}</pre>`);
+  const dlg = document.getElementById('src-panel');
+  document.getElementById('src-open').addEventListener('click', () => dlg.showModal());
+  document.getElementById('src-close').addEventListener('click', () => dlg.close());
+  document.querySelectorAll('.rc-card').forEach((card) => {
+    const ids = new Set();
+    card.querySelectorAll('[data-source]').forEach((el) => el.dataset.source.split(/\s+/).forEach((s) => files(s).forEach((f) => ids.add(f))));
+    if (!ids.size) return;
+    const p = document.createElement('p'); p.className = 'rc-src-line';
+    p.innerHTML = 'Source: ' + [...ids].map((f) => `<a href="data/${esc(D[f].file)}" download>${esc(D[f].file)}</a>`).join(', ');
+    card.appendChild(p);
+  });
+})();
+</script>
+</body></html>

@@ -1,0 +1,10 @@
+frame,type,field_1,field_2,formula,GUI_display_2014,note
+1stS233,resistance,stage 1 (1.49 mA),N=233,233*3.711mV/1.49mA,580.311 ohm,thesis Exp. 5
+2ndS233,resistance,stage 2 (0.15 mA),N=233,233*3.711mV/0.15mA,5.764 kohm,thesis Exp. 5
+3rdS233,resistance,stage 3 (16.88 uA),N=233,233*3.711mV/16.88uA,51.224 kohm,thesis 'expected' 51.012k used 16.95 uA
+4thS233,resistance,stage 4 (1.81 uA),N=233,233*3.711mV/1.81uA,0.478 Mohm,thesis Exp. 5
+F0R186,capacitance,0 overflows,186 ticks,(186-5)*0.5us/(30k*ln3),2.7459 nF,GUI subtracts 5 counts; raw = 2.821 nF
+F47R19192,capacitance,47 overflows,19192 ticks,(47*32.768ms+19192*0.5us)/(30k*ln3),47.020 uF,thesis Exp. 5
+F100R40559,capacitance,100 overflows,40559 ticks,(100*32.768ms+40559*0.5us)/(30k*ln3),100.04 uF,thesis Exp. 5
+Out of Range!,status,,,,OL,
+Error!,status,,,,Error!,unknown command

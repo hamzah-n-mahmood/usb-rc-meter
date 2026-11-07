@@ -3,7 +3,7 @@
 Files for the YouTube series **Building a USB RC Meter** by Dr. Hamzah Naser Mahmood on [WASLA | وصلة](https://www.youtube.com/@WaslaEngineering) (Arabic for a link, an electrical connection).
 The series rebuilds my 2014 B.Eng. (Hons) final-year project (Northumbria University / KDU College, Penang):
 a USB-powered meter that measures resistance and capacitance, with a PIC16F886 and a small Windows app.
-Playlist: (link after upload)
+Playlist: https://www.youtube.com/playlist?list=PLEHYL5zzZdWA
 
 Explore every number interactively on the companion dashboard: https://hamzah-n-mahmood.github.io/usb-rc-meter/ (the page is also in `docs/`)
 
@@ -11,13 +11,13 @@ Explore every number interactively on the companion dashboard: https://hamzah-n-
 
 | # | Episode | Video | Worksheet | Data |
 |---|---|---|---|---|
-| EP00 | Why I'm Rebuilding My 2014 Degree Project (meet your host) | (link after upload) |  |  |
-| EP01 | Why build a meter? How instruments measure R and C | (link after upload) | [worksheet](worksheets/EP01_Worksheet.pdf) | [data](data/EP01/) |
-| EP02 | The transistor as a constant-current source | (link after upload) | [worksheet](worksheets/EP02_Worksheet.pdf) | [data](data/EP02/) |
-| EP03 | Auto-ranging: current stages, analog switches and the ADC | (link after upload) | [worksheet](worksheets/EP03_Worksheet.pdf) | [data](data/EP03/) |
-| EP04 | Measuring capacitance with time | (link after upload) | [worksheet](worksheets/EP04_Worksheet.pdf) | [data](data/EP04/) |
-| EP05 | Firmware, UART and the PC app (and two bugs) | (link after upload) | [worksheet](worksheets/EP05_Worksheet.pdf) | [data](data/EP05/) |
-| EP06 | Does it actually work? Testing, accuracy and a 2026 redesign | (link after upload) | [worksheet](worksheets/EP06_Worksheet.pdf) | [data](data/EP06/) |
+| EP00 | Why I'm Rebuilding My 2014 Degree Project (meet your host) | [watch](https://youtu.be/T8Z1g2HkXbM) |  |  |
+| EP01 | Why build a meter? How instruments measure R and C | [watch](https://youtu.be/Xer41S_MS28) | [worksheet](worksheets/EP01_Worksheet.pdf) | [data](data/EP01/) |
+| EP02 | The transistor as a constant-current source | [watch](https://youtu.be/1h4IkziB8LQ) | [worksheet](worksheets/EP02_Worksheet.pdf) | [data](data/EP02/) |
+| EP03 | Auto-ranging: current stages, analog switches and the ADC | [watch](https://youtu.be/d4ut5oadKI8) | [worksheet](worksheets/EP03_Worksheet.pdf) | [data](data/EP03/) |
+| EP04 | Measuring capacitance with time | [watch](https://youtu.be/KvUuEQj5D48) | [worksheet](worksheets/EP04_Worksheet.pdf) | [data](data/EP04/) |
+| EP05 | Firmware, UART and the PC app (and two bugs) | [watch](https://youtu.be/1U822wpmmNM) | [worksheet](worksheets/EP05_Worksheet.pdf) | [data](data/EP05/) |
+| EP06 | Does it actually work? Testing, accuracy and a 2026 redesign | [watch](https://youtu.be/UuA0ndIvHeA) | [worksheet](worksheets/EP06_Worksheet.pdf) | [data](data/EP06/) |
 
 ## What's in this repository
 

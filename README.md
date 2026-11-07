@@ -1,6 +1,6 @@
 # Building a USB RC Meter
 
-Files for the YouTube series **Building a USB RC Meter** by Dr. Hamzah Naser Mahmood.
+Files for the YouTube series **Building a USB RC Meter** by Dr. Hamzah Naser Mahmood on [WASLA | وصلة](https://www.youtube.com/@WaslaEngineering) (Arabic for a link, an electrical connection).
 The series rebuilds my 2014 B.Eng. (Hons) final-year project (Northumbria University / KDU College, Penang):
 a USB-powered meter that measures resistance and capacitance, with a PIC16F886 and a small Windows app.
 Playlist: (link after upload)
